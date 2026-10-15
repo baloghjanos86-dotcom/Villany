@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="hu" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Villanyszerelő Szakmai App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Klasszikus (Compat) Firebase betöltés - nem akad el a module importban -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen font-sans pb-12">
+
+    <!-- FEJLÉC -->
+    <header class="bg-gray-900 border-b border-gray-800 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+        <div class="flex items-center space-x-2">
+            <span class="text-amber-500 text-xl font-bold">⚡ VillanyApp</span>
+            <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full hidden sm:inline-block">Szakmai Segédlet</span>
+        </div>
+        <div id="user-info" class="hidden flex items-center space-x-4">
+            <span id="user-email" class="text-sm text-gray-400 hidden sm:inline"></span>
+            <button id="logout-btn" type="button" onclick="handleLogout()" class="text-xs bg-red-600/20 text-red-400 border border-red-600/30 hover:bg-red-600/30 px-3 py-1.5 rounded-lg transition">
+                Kijelentkezés
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-4 sm:p-6">
+
+        <!-- BEJELENTKEZÉS / REGISZTRÁCIÓ (AUTH) -->
+        <div id="auth-container" class="max-w-md mx-auto mt-10 bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-white">Belépés a rendszerbe</h2>
+                <span id="sys-status" class="text-xs px-2 py-1 rounded bg-gray-800 text-gray-400">⏳ Betöltés...</span>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">E-mail cím</label>
+                    <input type="email" id="email" placeholder="pelda@email.hu" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Jelszó (min. 6 karakter)</label>
+                    <input type="password" id="password" placeholder="••••••" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                
+                <div id="auth-error" class="hidden text-xs p-3 rounded-lg border"></div>
+
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" id="login-btn" onclick="handleLogin()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold py-2 px-4 rounded-lg text-sm transition cursor-pointer">
+                        Belépés
+                    </button>
+                    <button type="button" id="register-btn" onclick="handleRegister()" class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition cursor-pointer">
+                        Regisztráció
+                    </button>
+                </div>
+
+                <!-- Vészhelyzeti / Offline belépés gomb -->
+                <div class="pt-4 border-t border-gray-800 text-center">
+                    <button type="button" onclick="enterOfflineMode()" class="text-xs text-gray-400 hover:text-amber-400 underline transition cursor-pointer">
+                        ⚡ Belépés kihagyása (Azonnali megnyitás Offline módban)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FŐ ALKALMAZÁS KONTÉNER -->
+        <div id="app-container" class="hidden space-y-6">
+
+            <!-- NAVIGÁCIÓS FÜLEK (TABS) -->
+            <div class="flex flex-wrap gap-2 border-b border-gray-800 pb-4">
+                <button id="tab-tananyag" type="button" onclick="switchTab('tananyag')" class="px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 text-gray-950 transition">
+                    📚 Tananyag és Kapcsolások
+                </button>
+                <button id="tab-kalkulator" type="button" onclick="switchTab('kalkulator')" class="px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">
+                    🧮 Szakmai Kalkulátorok
+                </button>
+                <button id="tab-ajanlat" type="button" onclick="switchTab('ajanlat')" class="px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">
+                    📋 Árajánlat & Anyagbecslő
+                </button>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 1. NÉZET: TANANYAG ÉS SZABVÁNYOK           -->
+            <!-- ========================================== -->
+            <div id="view-tananyag" class="space-y-6">
+                
+                <!-- Alapkapcsolások szekció -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                    <h2 class="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
+                        <span>🔌</span> Világítási alapkapcsolások
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-bold text-white text-sm">Egysarkú kapcsolás</h3>
+                                <span class="text-xs font-mono bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">101</span>
+                            </div>
+                            <p class="text-xs text-gray-400 leading-relaxed">
+                                Egy áramkör (fogyasztó) egy helyről történő be- és kikapcsolására szolgál. A kapcsoló <strong>mindig a fázisvezetőt (L)</strong> szakítja meg, a nulla (N) és a védővezető (PE) közvetlenül a lámpatesthez fut.
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-bold text-white text-sm">Csillárkapcsolás</h3>
+                                <span class="text-xs font-mono bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">105</span>
+                            </div>
+                            <p class="text-xs text-gray-400 leading-relaxed">
+                                Két különálló lámpacsoport egy helyről, egymástól függetlenül vagy együttesen történő kapcsolása. Egy közös fázisbemenő (L) pontból és két kapcsolt szálból áll.
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-bold text-white text-sm">Váltókapcsolás (Alternatív)</h3>
+                                <span class="text-xs font-mono bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">106</span>
+                            </div>
+                            <p class="text-xs text-gray-400 leading-relaxed">
+                                Egy fogyasztó <strong>két különböző helyről</strong> (pl. folyosó két vége) történő vezérlése. Az első kapcsoló közös pontjára megy a fázis, a két kapcsolót két lengőszál (korrespondáló vezeték) köti össze, a második kapcsoló közös pontjáról megy a kapcsolt szál a lámpához.
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-bold text-white text-sm">Keresztkapcsolás</h3>
+                                <span class="text-xs font-mono bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">107</span>
+                            </div>
+                            <p class="text-xs text-gray-400 leading-relaxed">
+                                Három vagy több helyről történő kapcsolás. Két darab <strong>106-os váltókapcsoló közé</strong> építjük be a 107-es keresztkapcsoló(ka)t a két lengőszál útjába (4 bekötési pont: 2 bejövő, 2 kimenő lengő).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Érintésvédelem és Vezetékszínek -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                        <h2 class="text-base font-bold text-amber-400 mb-3">🎨 Szabványos vezetékszínek (MSZ HD 308)</h2>
+                        <ul class="space-y-2.5 text-xs text-gray-300">
+                            <li class="flex items-center justify-between border-b border-gray-800 pb-2">
+                                <span><strong>L1 (Egyfázisú fázis):</strong></span>
+                                <span class="px-2 py-0.5 rounded bg-amber-900/60 text-amber-200 border border-amber-700">Barna (vagy Fekete)</span>
+                            </li>
+                            <li class="flex items-center justify-between border-b border-gray-800 pb-2">
+                                <span><strong>L1, L2, L3 (Háromfázis):</strong></span>
+                                <span class="px-2 py-0.5 rounded bg-gray-800 text-gray-200 border border-gray-700">Barna, Fekete, Szürke</span>
+                            </li>
+                            <li class="flex items-center justify-between border-b border-gray-800 pb-2">
+                                <span><strong>N (Nullavezető):</strong></span>
+                                <span class="px-2 py-0.5 rounded bg-blue-900/50 text-blue-300 border border-blue-700">Világoskék</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span><strong>PE / PEN (Védővezető):</strong></span>
+                                <span class="px-2 py-0.5 rounded bg-emerald-900/50 text-yellow-300 border border-emerald-600">Zöld-Sárga</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                        <h2 class="text-base font-bold text-amber-400 mb-3">🛡️ Érintésvédelmi alapok (TN-C-S és ÁVK)</h2>
+                        <div class="space-y-2.5 text-xs text-gray-300 leading-relaxed">
+                            <p>
+                                <strong>PEN szétválasztás (TN-C-S):</strong> A szolgáltatótól érkező közös PEN vezetőt a főelosztóban szétválasztjuk külön <strong>PE</strong> (védő) és <strong>N</strong> (nulla) sínre. A szétválasztás után a PE és N vezetőket <strong>tilos újra egyesíteni!</strong>
+                            </p>
+                            <p>
+                                <strong>ÁVK (FI-relé, RCD):</strong> A fázis(ok)on és a nullán folyó áramok előjeles összegét figyeli. Személyvédelemre lakossági környezetben <strong>30 mA</strong> érzékenységű eszközt alkalmazunk (kioldási tartomány: 15–30 mA között).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gyors méretezési segédtáblázat -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                    <h2 class="text-base font-bold text-amber-400 mb-3">📏 Irányadó rézvezeték keresztmetszetek és biztosításuk (B2 / C elhelyezés)</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-gray-300 border-collapse">
+                            <thead>
+                                <tr class="border-b border-gray-800 text-gray-400">
+                                    <th class="py-2 px-3">Keresztmetszet</th>
+                                    <th class="py-2 px-3">Javasolt Kismegszakító</th>
+                                    <th class="py-2 px-3">Max. Teljesítmény (230V)</th>
+                                    <th class="py-2 px-3">Jellemző felhasználás</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800/60">
+                                <tr>
+                                    <td class="py-2 px-3 font-bold text-white">1,5 mm² Cu</td>
+                                    <td class="py-2 px-3 text-amber-400">10 A (max. 13 A)</td>
+                                    <td class="py-2 px-3">~2 300 W</td>
+                                    <td class="py-2 px-3 text-gray-400">Világítási áramkörök</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3 font-bold text-white">2,5 mm² Cu</td>
+                                    <td class="py-2 px-3 text-amber-400">16 A</td>
+                                    <td class="py-2 px-3">~3 680 W</td>
+                                    <td class="py-2 px-3 text-gray-400">Általános dugaszolóaljzatok, klíma</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3 font-bold text-white">4,0 mm² Cu</td>
+                                    <td class="py-2 px-3 text-amber-400">20 A (max. 25 A)</td>
+                                    <td class="py-2 px-3">~4 600 W</td>
+                                    <td class="py-2 px-3 text-gray-400">Sütő, főzőlap, nagyobb bojler</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3 font-bold text-white">6,0 mm² Cu</td>
+                                    <td class="py-2 px-3 text-amber-400">25 A – 32 A</td>
+                                    <td class="py-2 px-3">~5 750 – 7 360 W</td>
+                                    <td class="py-2 px-3 text-gray-400">Főzőlap (1f/3f), alelosztó gerinc</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3 font-bold text-white">10,0 mm² Cu</td>
+                                    <td class="py-2 px-3 text-amber-400">32 A – 40 A</td>
+                                    <td class="py-2 px-3">~7 360 – 9 200 W</td>
+                                    <td class="py-2 px-3 text-gray-400">Főelosztó bekötés, méretlen fővezeték</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ==========================================
