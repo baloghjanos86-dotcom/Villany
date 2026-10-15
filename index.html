@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elektrik-Home - Villanyszerelési Alapok (Kézikönyv)</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f59e0b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- FEJLÉC -->
+    <header class="bg-gray-900 border-b border-amber-500/30 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">⚡</span>
+                <h1 class="text-lg font-bold tracking-wide text-amber-400">Elektrik-Home</h1>
+            </div>
+            <div id="user-info" class="hidden flex items-center space-x-3">
+                <span id="user-email" class="text-xs text-gray-400 hidden sm:inline"></span>
+                <button id="logout-btn" class="bg-red-600/80 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-md transition font-medium">Kilépés</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- FŐ TARTALOM -->
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4">
+
+        <!-- BEJELENTKEZÉS / REGISZTRÁCIÓ -->
+        <div id="auth-container" class="max-w-md mx-auto mt-12 bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-xl">
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-bold text-amber-400">Biztonságos Belépés</h2>
+                <p class="text-xs text-gray-400 mt-1">Villanyszerelő Szakmai Ismeretek & Kalkulátor</p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">E-mail cím</label>
+                    <input type="email" id="email" required class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Jelszó</label>
+                    <input type="password" id="password" required class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div id="auth-error" class="text-xs text-red-400 hidden"></div>
+                <div class="flex space-x-2 pt-2">
+                    <button type="button" id="login-btn" class="flex-1 bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold py-2 px-4 rounded-lg text-sm transition">Bejelentkezés</button>
+                    <button type="button" id="register-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-amber-400 border border-amber-500/30 font-medium py-2 px-4 rounded-lg text-sm transition">Regisztráció</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP FELÜLET -->
+        <div id="app-container" class="hidden space-y-6">
+            
+            <!-- FÜLEK -->
+            <div class="flex space-x-2 border-b border-gray-800 pb-2 overflow-x-auto">
+                <button onclick="switchTab('alaptananyag')" id="tab-alaptananyag" class="px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 text-gray-950 transition">📖 Könyv & Példák</button>
+                <button onclick="switchTab('tananyag')" id="tab-tananyag" class="px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">📚 Gyorsjegyzetek</button>
+                <button onclick="switchTab('kalkulator')" id="tab-kalkulator" class="px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">📐 Kalkulátor</button>
+            </div>
+
+            <!-- 1. ALAPTANANYAGOK -->
+            <div id="view-alaptananyag" class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="text-lg font-bold text-amber-400 mb-1">Villanyszerelő Szakmai Ismeretek I.</h3>
+                    <p class="text-xs text-gray-400 mb-4">Részletes elméleti anyag, méretezési táblázatok és gyakorlati példák.</p>
+                    
+                    <div class="space-y-3">
+                        <!-- 1. Fejezet -->
+                        <details class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                            <summary class="font-medium text-sm text-amber-300 cursor-pointer">1. Alapfogalmak és Ohm-törvény (Példákkal)</summary>
+                            <div class="text-xs text-gray-300 mt-2 space-y-2 leading-relaxed">
+                                <p><strong>Ohm-törvény:</strong> $U = I \cdot R$.</p>
+                                <div class="bg-gray-900 p-2.5 rounded border border-gray-800 my-1">
+                                    <p class="text-amber-300 font-medium">Gyakorlati példa:</p>
+                                    <p>Mekkora áram folyik egy 230V-os hálózatra kapcsolt, 46 Ohm ellenállású fűtőbetéten?</p>
+                                    <p class="text-gray-400 mt-1">Megoldás: $I = \frac{U}{R} = \frac{230}{46} = 5\text{ A}$.</p>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- 2. Fejezet -->
+                        <details class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                            <summary class="font-medium text-sm text-amber-300 cursor-pointer">2. Hálózati Rendszerek és Csatlakozások</summary>
+                            <div class="text-xs text-gray-300 mt-2 space-y-2 leading-relaxed">
+                                <p><strong>Földelési rendszerek:</strong> TN-S (külön nulla és védővezető), TN-C (közösített PEN vezető), TT (helyi földelés).</p>
+                                <p><strong>Mérőhelyek:</strong> Szabványos fogyasztásmérő szekrények, megbonthatatlan méretlen fővezetéki szakaszok kialakítása.</p>
+                            </div>
+                        </details>
+
+                        <!-- 3. Fejezet -->
+                        <details class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                            <summary class="font-medium text-sm text-amber-300 cursor-pointer">3. Vezetékek, Kábelek és Terhelhetőségi Táblázatok</summary>
+                            <div class="text-xs text-gray-300 mt-2 space-y-2 leading-relaxed">
+                                <p><strong>Szabványos réz (Cu) vezetékek terhelhetősége (vakolat alatt / csőben):</strong></p>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li><strong>1.5 mm²:</strong> max. ~13–15 A (világítási áramkörök, B10 vagy B16 kismegszakítóval védve).</li>
+                                    <li><strong>2.5 mm²:</strong> max. ~18–21 A (dugaljak áramkörei, B16 kismegszakítóval).</li>
+                                    <li><strong>4.0 mm² / 6.0 mm²:</strong> nagyobb teljesítményű fogyasztók, fővezetéki ágasan.</li>
+                                </ul>
+                                <p class="mt-2"><strong>Feszültségesési határok:</strong> Világítási hálózatokon max. 3%, egyéb berendezéseknél max. 5%.</p>
+                            </div>
+                        </details>
+
+                        <!-- 4. Fejezet -->
+                        <details class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                            <summary class="font-medium text-sm text-amber-300 cursor-pointer">4. Kapcsolókészülékek és Kismegszakító Karakterisztikák</summary>
+                            <div class="text-xs text-gray-300 mt-2 space-y-2 leading-relaxed">
+                                <p><strong>Kismegszakító típusok táblázata:</strong></p>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li><strong>B karakterisztika:</strong> 3–5 $\cdot I_n$ (Lakossági dugaljak, világítás).</li>
+                                    <li><strong>C karakterisztika:</strong> 5–10 $\cdot I_n$ (Motorok, transzformátorok, induktív terhelések).</li>
+                                    <li><strong>D karakterisztika:</strong> 10–20 $\cdot I_n$ (Nagy indítóáramú ipari gépek, röntgengépek).</li>
+                                </ul>
+                                <p class="mt-2"><strong>Áram-védőkapcsoló (ÁVK):</strong> 30 mA (személyvédelem), 300 mA (tűzvédelem).</p>
+                            </div>
+                        </details>
+
+                        <!-- 5. Fejezet -->
+                        <details class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                            <summary class="font-medium text-sm text-amber-300 cursor-pointer">5. Világítástechnikai Méretezés</summary>
+                            <div class="text-xs text-gray-300 mt-2 space-y-2 leading-relaxed">
+                                <p><strong>Alapképlet:</strong> $\Phi = \frac{E \cdot S}{n \cdot u}$ (Fényáram = Megvilágítás $\times$ Alapterület / Fényhasznosítási tényezők).</p>
+                                <p>Irodákban ajánlott megvilágítás: ~500 lux; Lakóterekben: ~100–300 lux.</p>
+                            </div>
+                        </details>
+
+                        <!-- 6. Fejezet -->
+                        <details class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                            <summary class="font-medium text-sm text-amber-300 cursor-pointer">6. Villámvédelem, Túlfeszültség és EPH</summary>
+                            <div class="text-xs text-gray-300 mt-2 space-y-2 leading-relaxed">
+                                <p><strong>EPH csomópont:</strong> A gáz-, víz-, fűtéscsövek és a fő földelőkapocs összekötése legalább 6 mm² zöld-sárga rézvezetővel.</p>
+                            </div>
+                        </details>
+
+                        <!-- 7. Fejezet -->
+                        <details class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                            <summary class="font-medium text-sm text-amber-300 cursor-pointer">7. Munkavédelem és Feszül
