@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elektrik-Home - Professzionális Villanyszerelő Kézikönyv & Lexikon</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f59e0b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- FEJLÉC -->
+    <header class="bg-gray-900 border-b border-amber-500/30 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">⚡</span>
+                <h1 class="text-lg font-bold tracking-wide text-amber-400">Elektrik-Home <span class="text-xs text-gray-400 font-normal">| Mester Kézikönyv</span></h1>
+            </div>
+            <div id="user-info" class="hidden flex items-center space-x-3">
+                <span id="user-email" class="text-xs text-gray-400 hidden sm:inline"></span>
+                <button id="logout-btn" class="bg-red-600/80 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-md transition font-medium">Kilépés</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- FŐ TARTALOM -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4">
+
+        <!-- BEJELENTKEZÉS / REGISZTRÁCIÓ -->
+        <div id="auth-container" class="max-w-md mx-auto mt-16 bg-gray-900 p-8 rounded-xl border border-gray-800 shadow-2xl">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-amber-400">Biztonságos Belépés</h2>
+                <p class="text-xs text-gray-400 mt-1">Teljes körű szakmai tudásbázis & mérnöki kalkulátorok</p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">E-mail cím</label>
+                    <input type="email" id="email" required class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Jelszó</label>
+                    <input type="password" id="password" required class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div id="auth-error" class="text-xs text-red-400 hidden"></div>
+                <div class="flex space-x-2 pt-2">
+                    <button type="button" id="login-btn" class="flex-1 bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold py-2.5 px-4 rounded-lg text-sm transition">Bejelentkezés</button>
+                    <button type="button" id="register-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-amber-400 border border-amber-500/30 font-medium py-2.5 px-4 rounded-lg text-sm transition">Regisztráció</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP FELÜLET -->
+        <div id="app-container" class="hidden space-y-6">
+            
+            <!-- FÜLEK -->
+            <div class="flex space-x-2 border-b border-gray-800 pb-2 overflow-x-auto">
+                <button onclick="switchTab('lexikon')" id="tab-lexikon" class="px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 text-gray-950 transition">📖 Könyv & Fejezetek</button>
+                <button onclick="switchTab('kepletek')" id="tab-kepletek" class="px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">📊 Képletek & Táblázatok</button>
+                <button onclick="switchTab('kalkulator')" id="tab-kalkulator" class="px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">📐 Mérnöki Kalkulátorok</button>
+            </div>
+
+            <!-- 1. KÖNYV & FEJEZETEK (Részletes lexikon, ábrahelyekkel) -->
+            <div id="view-lexikon" class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl">
+                    <h3 class="text-xl font-bold text-amber-400 mb-1">Villanyszerelő Szakmai Ismeretek - Teljes Kézikönyv</h3>
+                    <p class="text-xs text-gray-400 mb-6">Minden hivatalos témakör, elmélet és szerelési technológia kifejtve.</p>
+                    
+                    <div class="space-y-4">
+                        <!-- Fejezet 1 -->
+                        <details class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <summary class="font-bold text-sm text-amber-300 cursor-pointer">1. Elektrotechnikai Alapok, Törvények és Hálózatok</summary>
+                            <div class="text-xs text-gray-300 mt-3 space-y-3 leading-relaxed">
+                                <p><strong>Atomfizikai háttér:</strong> Az anyagok atomi szerkezete, szabad elektronok vándorlása. Vezetők, félvezetők és szigetelők fizikai tulajdonságai.</p>
+                                <p><strong>Ohm-törvény és Teljesítményviszonyok:</strong> Az egyenáramú és váltakozó áramú alaptörvények ($U = I \cdot R$, $P = U \cdot I$). Teljesítménytényező ($\cos\varphi$) jelentése induktív terheléseknél.</p>
+                                <div class="p-3 bg-gray-900 rounded border border-gray-800 my-2">
+                                    <p class="text-amber-400 font-medium mb-1">Sematikus illusztráció helye:</p>
+                                    <div class="w-full h-36 bg-gray-950 rounded flex items-center justify-center border border-dashed border-gray-700 text-gray-500 text-center p-2">
+                                        [Séma: Váltakozó áramú feszültség és áram fáziseltolódásának grafikonja]
+                                    </div>
+                                </div>
+                                <p><strong>Kirchhoff-törvények:</strong> I. Csomóponti törvény ($\sum I = 0$), II. Huroktörvény ($\sum U = 0$). Alkalmazásuk hálózatok számításakor.</p>
+                            </div>
+                        </details>
+
+                        <!-- Fejezet 2 -->
+                        <details class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <summary class="font-bold text-sm text-amber-300 cursor-pointer">2. Villamosenergia-ellátási Rendszerek és Elosztók</summary>
+                            <div class="text-xs text-gray-300 mt-3 space-y-3 leading-relaxed">
+                                <p><strong>Átviteli szintek:</strong> Erőművi termelés (10-20 kV), nagyfeszültségű távvezetékek (132-400 kV), transzformáció kisfeszültségre (400/230V).</p>
+                                <p><strong>Földelési rendszerek részletesen:</strong> TN-S, TN-C, TN-C-S és TT rendszerek felépítése, biztonsági előírásai, a PEN vezető keresztmetszeti követelményei (min. 10 mm² Cu).</p>
+                            </div>
+                        </details>
+
+                        <!-- Fejezet 3 -->
+                        <details class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <summary class="font-bold text-sm text-amber-300 cursor-pointer">3. Kábelek, Vezetékek és Méretezési Eljárások</summary>
+                            <div class="text-xs text-gray-300 mt-3 space-y-3 leading-relaxed">
+                                <p><strong>Vezetőanyagok:</strong> Réz vs. Alumínium összehasonlítás, mechanikai szilárdság, oxidációs folyamatok és kötéstechnológiai szabályok.</p>
+                                <p><strong>Méretezési szempontok:</strong> 1. Melegedés szerinti határáram; 2. Feszültségesési határértékek (világítás max. 3%, erőátvitel max. 5%); 3. Hurokellenállás és kioldási idő ellenőrzése.</p>
+                            </div>
+                        </details>
+
+                        <!-- Fejezet 4 -->
+                        <details class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <summary class="font-bold text-sm text-amber-300 cursor-pointer">4. Kapcsolókészülékek, Elosztók és Védelem</summary>
+                            <div class="text-xs text-gray-300 mt-3 space-y-3 leading-relaxed">
+                                <p><strong>Kismegszakítók:</strong> B, C, D karakterisztikák működési tartománya, bimetall és elektromágneses kioldók.</p>
+                                <p><strong>Áram-védőkapcsolók (ÁVK / Fi-relé):</strong> Érzékenységi szintek (30 mA személyvédelem, 300 mA tűzvédelem), AC, A, B típusú relék működési elve.</p>
+                            </div>
+                        </details>
+
+                        <!-- Fejezet 5 -->
+                        <details class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <summary class="font-bold text-sm text-amber-300 cursor-pointer">5. Világítástechnikai Számítások és Rendszerek</summary>
+                            <div class="text-xs text-gray-300 mt-3 space-y-3 leading-relaxed">
+                                <p>Fényáram, fényerősség, megvilágítás és ragyogás. LED fényforrások hatásos fényhasznosítása, színhőmérséklet (Kelvin) és színvisszaadási index (CRI).</p>
+                            </div>
+                        </details>
+
+                        <!-- Fejezet 6 -->
+                        <details class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <summary class="font-bold text-sm text-amber-300 cursor-pointer">6. Villámvédelem, Túlfeszültség és EPH</summary>
+                            <div class="text-xs text-gray-300 mt-3 space-y-3 leading-relaxed">
+                                <p>Külső villámvédelem (felfogók, levezetők), EPH hálózat kiépítése fémcsövek összefogásával, és T1-T2-T3 fokozatú túlfeszültség-védelem.</p>
+                            </div>
+                        </details>
+
+                        <!-- Fejezet 7 -->
+                        <details class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <summary class="font-bold text-sm text-amber-300 cursor-pointer">7. Munkavédelem és Feszültség Alatti Munkák (FAM)</summary>
+                            <div class="text-xs text-gray-300 mt-3 space-y-3 leading-relaxed">
+                                <p>Az 5 aranyszabály, érintésvédelmi ellenőrzési jegyzőkönyvek és a szigorú FAM előírások.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. KÉPLETEK & TÁBLÁZATOK -->
+            <div id="view-kepletek" class="hidden space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl">
+                    <h3 class="text-xl font-bold text-amber-400 mb-3">Szabványos Táblázatok & Képletgyűjtemény</h3>
+                    <p class="text-xs text-gray-400 mb-6">Mérnöki segédletek a gyors helyszíni számításokhoz.</p>
+                    
+                    <div class="space-y-6 text-xs text-gray-300">
+                        <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                            <h4 class="font-bold text-amber-300 mb-3 text-sm">Réz vezetékek terhelhetősége (Vakolat alatt / csőben)</h4>
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-gray-800 text-amber-400">
+                                        <th class="p-2">Keresztmetszet</th>
+                                        <th class="p-2">Max. Áramterhelhetőség</th>
+                                        <th class="p-2">Ajánlott kismegszakító</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="p-2">1.5 mm²</td>
+                                        <td class="p-2">13 - 15 A</td>
+                                        <td class="p-2">B10 vagy B16</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="p-2">2.5 mm²</td>
+                                        <td class="p-2">18 - 21 A</td>
+                                        <td class="p-2">B16 vagy C16</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="p-2">4.0 mm²</td>
+                                        <td class="p-2">24 - 28 A</td>
+                                        <td class="p-2">B20 vagy C20</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2">6.0 mm²</td>
+                                        <td class="p-2">31 - 36 A</td>
+                                        <td class="p-2">B25 vagy C25</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-gray-950 p-4 rounded-lg border border-gray-800 space-y-2">
+                            <h4 class="font-bold text-amber-300 text-sm mb-2">Fontos Képletek</h4>
+                            <p><strong>Egyfázisú hatásos teljesítmény:</strong> $P = U \cdot I \cdot \cos\varphi$</p>
+                            <p><strong>Háromfázisú hatásos teljesítmény:</strong> $P = \sqrt{3} \cdot U \cdot I \cdot \cos\varphi$</p>
+                            <p><strong>Feszültségesés:</strong> $\Delta U = \frac{2 \cdot l \cdot I}{\gamma \cdot A}$ (rézre $\gamma \approx 56$)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. KALKULÁTOROK -->
+            <div id="view-kalkulator" class="hidden space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl max-w-xl mx-auto">
+                    <h3 class="text-xl font-bold text-amber-400 mb-2">Mérnöki Áram & Teljesítmény Kalkulátor</h3>
+                    <p class="text-xs text-gray-400 mb-6">Számítsd ki egyfázisú fogyasztók és háromfázisú motorok pontos áramfelvételét.</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Rendszer / Feszültség</label>
+                            <select id="calc-system" onchange="toggleCosPhi()" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                                <option value="1">Egyfázisú (230V, cos φ = 1.0)</option>
+                                <option value="3">Háromfázisú motor (400V)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Teljesítmény (Watt vagy kW)</label>
+                            <input type="number" id="calc-power" placeholder="pl. 3000 vagy 3" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div id="cosphi-container" class="hidden">
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Teljesítménytényező ($\cos\varphi$)</label>
+                            <input type="number" id="calc-cosphi" value="0.82" step="0.01" min="0.5" max="1.0" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <button onclick="calculateCurrent()" class="w-full bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold py-3 px-4 rounded-lg text-sm transition mt-2 shadow-lg">Számolás indítása</button>
+                        
+                        <div id="calc-result" class="hidden mt-4 p-4 bg-gray-950 border border-amber-500/30 rounded-lg text-sm text-amber-300 font-medium"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FIREBASE LOGIKA ÉS ALKALMAZÁS VEZÉRLÉS -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDmoW-G2ddk9MGT8LkcRx6IboEubl8h1D8",
+            authDomain: "baloghjanos86-dotcom.github.io",
+            projectId: "villanyapp-4fbc2",
+            storageBucket: "villanyapp-4fbc2.firebasestorage.app",
+            messagingSenderId: "14868953112",
+            appId: "1:220375048900:web:4f683f77dc5a7bd5ab9f91"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        setPersistence(auth, browserLocalPersistence).catch((error) => {
+            console.error("Perzisztencia hiba:", error);
+        });
+
+        const authContainer = document.getElementById('auth-container');
+        const appContainer = document.getElementById('app-container');
+        const userInfo = document.getElementById('user-info');
+        const userEmail = document.getElementById('user-email');
+        const authError = document.getElementById('auth-error');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                authContainer.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                userInfo.classList.remove('hidden');
+                userEmail.textContent = user.email;
+            } else {
+                authContainer.classList.remove('hidden');
+                appContainer.classList.add('hidden');
+                userInfo.classList.add('hidden');
+            }
+        });
+
+        loginBtn.addEventListener('click', () => {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            authError.classList.add('hidden');
+
+            if (!email || !password) {
+                authError.textContent = "Kérlek add meg az e-mail címet és jelszót!";
+                authError.classList.remove('hidden');
+                return;
+            }
+
+            signInWithEmailAndPassword(auth, email, password)
+                .catch((error) => {
+                    authError.textContent = "Belépési hiba: " + error.message;
+                    authError.classList.remove('hidden');
+                });
+        });
+
+        registerBtn.addEventListener('click', () => {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            authError.classList.add('hidden');
+
+            if (!email || !password) {
+                authError.textContent = "Kérlek add meg az e-mail címet és jelszót!";
+                authError.classList.remove('hidden');
+                return;
+            }
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .catch((error) => {
+                    authError.textContent = "Regisztrációs hiba: " + error.message;
+                    authError.classList.remove('hidden');
+                });
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth);
+        });
+    </script>
+
+    <!-- UI SEGÉDFÜGGVÉNYEK -->
+    <script>
+        function switchTab(tabName) {
+            const tabLexikon = document.getElementById('tab-lexikon');
+            const tabKepletek = document.getElementById('tab-kepletek');
+            const tabKalkulator = document.getElementById('tab-kalkulator');
+            
+            const viewLexikon = document.getElementById('view-lexikon');
+            const viewKepletek = document.getElementById('view-kepletek');
+            const viewKalkulator = document.getElementById('view-kalkulator');
+
+            tabLexikon.className = "px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition";
+            tabKepletek.className = "px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition";
+            tabKalkulator.className = "px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition";
+            
+            viewLexikon.classList.add('hidden');
+            viewKepletek.classList.add('hidden');
+            viewKalkulator.classList.add('hidden');
+
+            if (tabName === 'lexikon') {
+                tabLexikon.className = "px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 text-gray-950 transition";
+                viewLexikon.classList.remove('hidden');
+            } else if (tabName === 'kepletek') {
+                tabKepletek.className = "px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 text-gray-950 transition";
+                viewKepletek.classList.remove('hidden');
+            } else {
+                tabKalkulator.className = "px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 text-gray-950 transition";
+                viewKalkulator.classList.remove('hidden');
+            }
+        }
+
+        function toggleCosPhi() {
+            const system = document.getElementById('calc-system').value;
+            const cosPhiContainer = document.getElementById('cosphi-container');
+            if (system === '3') {
+                cosPhiContainer.classList.remove('hidden');
+            } else {
+                cosPhiContainer.classList.add('hidden');
+            }
+        }
+
+        function calculateCurrent() {
+            const system = document.getElementById('calc-system').value;
+            let power = parseFloat(document.getElementById('calc-power').value);
+            const resultBox = document.getElementById('calc-result');
+
+            if (!power || power <= 0) {
+                resultBox.textContent = "Kérlek add meg a teljesítményt!";
+                resultBox.classList.remove('hidden');
+                return;
+            }
+
+            let current = 0;
+            if (system === '1') {
+                current = power / 230;
+                resultBox.innerHTML = `Egyfázisú áramfelvétel (230V): <strong class="text-white">${current.toFixed(2)} A</strong>`;
+            } else {
+                const cosPhi = parseFloat(document.getElementById('calc-cosphi').value) || 0.82;
+                current = power / (Math.sqrt(3) * 400 * cosPhi);
+                resultBox.innerHTML = `Háromfázisú motor áramfelvétel (400V, cos φ: ${cosPhi}): <strong class="text-white">${current.toFixed(2)} A</strong>`;
+            }
+            resultBox.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
